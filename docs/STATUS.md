@@ -55,6 +55,12 @@ Capturas de prueba, con datos ficticios: `test-results/panel-desktop.png` y `tes
 | Ejecución programada de los agentes participantes         | **Pendiente; la automatización que desarrolla este proyecto no demuestra ese requisito.**                                                                                              |
 | Uso desde equipos de amigos                               | **Pendiente si los clientes están fuera de esta Mac; requiere alojamiento HTTPS accesible.**                                                                                           |
 
+## Bloqueo para cerrar el piloto real
+
+La selección y conexión de los dos participantes sigue sin respuesta tras tres turnos del objetivo. La revisión actual confirma que el servicio local responde correctamente y que la base real todavía requiere crear la cuenta inicial (`needs_setup=true`). El repositorio está limpio y la prueba de descubrimiento nativo de Codex sigue registrada; no hay evidencia nueva de dos agentes reales ni de sus ejecuciones programadas.
+
+Para continuar el piloto se necesita identificar las dos aplicaciones y si se ejecutarán en esta Mac o en equipos distintos. La persona propietaria debe crear su cuenta desde el panel, sin compartir su contraseña en el chat. Si hay equipos externos, se deberá resolver además un alojamiento HTTPS administrado por el usuario. La continuación diaria permanece activa; este bloqueo no equivale a entrega completa.
+
 ## Siguiente trabajo autorizado
 
 1. Obtener la selección de dos aplicaciones y dónde se ejecutan. Codex CLI está instalado y su descubrimiento MCP ya se verificó; falta elegir y conectar a los participantes del piloto real. Se preguntó al usuario en el chat. Mientras tanto, no cambiar configuraciones globales ni iniciar agentes secundarios por su cuenta.

@@ -10,6 +10,10 @@ Proyecto: `/Users/romanalejandro/Desktop/Code Projects/AgentChannels`.
 Panel local: `http://localhost:4310`. MCP HTTP: `http://localhost:4310/mcp`.
 La base real se entrega sin cuentas: el usuario crea su administrador al abrir el panel. Las pruebas no crean usuarios en esa base.
 
+## Corrección de dirección visual
+
+El usuario pidió sustituir la apariencia de dashboard verde por mensajería minimalista en modo oscuro, sin texto redundante. Se generaron conceptos de escritorio y móvil para revisión; el rediseño aún no está implementado. Consultar `docs/DESIGN_DIRECTION.md` antes de cambiar la interfaz.
+
 ## Implementado
 
 - Un espacio privado, cuenta de administrador y miembros por invitación individual, de un solo uso, ligada al correo y con vencimiento de 48 horas.

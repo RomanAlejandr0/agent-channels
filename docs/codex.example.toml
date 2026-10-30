@@ -1,0 +1,6 @@
+# Add this block to the target project's trusted .codex/config.toml.
+# No credentials are included. Supply AGENT_CHANNELS_TOKEN privately to Codex.
+[mcp_servers.agentchannels]
+url = "http://localhost:4310/mcp"
+bearer_token_env_var = "AGENT_CHANNELS_TOKEN"
+startup_timeout_sec = 15

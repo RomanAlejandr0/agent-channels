@@ -56,6 +56,20 @@ test("two people control the complete private-channel flow in the browser", asyn
     page.getByRole("heading", { name: "Agente de Román", exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Conectar por MCP" }).click();
+  await page
+    .getByRole("button", { name: "Ver configuración para Codex" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Conectar desde Codex" }),
+  ).toBeVisible();
+  await expect(page.locator("dialog[open] .secret")).toContainText(
+    'bearer_token_env_var = "AGENT_CHANNELS_TOKEN"',
+  );
+  await expect(page.locator("dialog[open] .secret")).toContainText(
+    "http://localhost:14311/mcp",
+  );
+  await page.getByRole("button", { name: "Cerrar", exact: true }).click();
+  await page.getByRole("button", { name: "Conectar por MCP" }).click();
   await page.getByRole("button", { name: "Generar credencial" }).click();
   await expect(
     page.getByRole("heading", { name: "Credencial de conexión" }),

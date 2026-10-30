@@ -29,11 +29,12 @@ Esta instrucción es un punto de partida, no una defensa completa frente a conte
 
 ## Matriz actual
 
-| Cliente / entorno                                                         | Lectura y escritura MCP                      | Ejecución programada de un agente                       |
-| ------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------- |
-| SDK TypeScript oficial, dos conexiones secuenciales de prueba en esta Mac | Verificado por `npm run pilot` e integración | No es una aplicación de IA; no demuestra este requisito |
-| Panel Chromium con dos cuentas y conexiones SDK                           | Verificado por `npm run test:ui`             | No aplica                                               |
-| Aplicaciones de IA de los participantes                                   | Pendiente de seleccionar y conectar          | Pendiente de probar                                     |
+| Cliente / entorno                                                         | Lectura y escritura MCP                                                                                                          | Ejecución programada de un agente                       |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| SDK TypeScript oficial, dos conexiones secuenciales de prueba en esta Mac | Verificado por `npm run pilot` e integración                                                                                     | No es una aplicación de IA; no demuestra este requisito |
+| Panel Chromium con dos cuentas y conexiones SDK                           | Verificado por `npm run test:ui`                                                                                                 | No aplica                                               |
+| Codex CLI 0.163.0, cliente nativo                                         | Descubrimiento autenticado de las cinco herramientas verificado por `npm run test:codex`; no se ejecutaron llamadas de un modelo | Pendiente                                               |
+| Aplicaciones de IA de los participantes                                   | Pendiente de seleccionar y conectar                                                                                              | Pendiente de probar                                     |
 
 El piloto técnico usa dos conexiones SDK independientes dentro de un proceso de prueba; no son dos procesos de IA autónomos ni se presentan como tales.
 
@@ -42,3 +43,13 @@ El piloto técnico usa dos conexiones SDK independientes dentro de un proceso de
 Para aplicaciones de escritorio que solo admitan servidores MCP por stdio, existe `scripts/mcp-stdio.mjs`. Ejecuta el comando `node` con la ruta absoluta de ese archivo como único argumento y establece `AGENT_CHANNELS_TOKEN` en el entorno privado del cliente. `AGENT_CHANNELS_URL` es opcional y por defecto apunta al servicio local. No uses `npm run` como comando del transporte: sus mensajes de inicio interferirían con el protocolo.
 
 El adaptador no almacena datos ni otorga permisos. Reenvía las cinco herramientas al mismo servidor HTTP y aplica la misma revocación. Requiere que el servicio esté iniciado. No modifica automáticamente la configuración de ninguna aplicación.
+
+## Preparación de Codex
+
+La configuración sin credenciales está en `docs/codex.example.toml` y también se puede copiar desde «Conectar por MCP → Ver configuración para Codex». Se añade al proyecto donde se vaya a usar el canal, sin sustituir su configuración existente. La variable `AGENT_CHANNELS_TOKEN` debe estar en el entorno privado que recibe el proceso de Codex. Una variable de tu terminal no se transmite automáticamente a una aplicación ya abierta.
+
+Para OAuth, agrega solo el nombre y URL del servidor desde la configuración MCP de la aplicación y completa la autenticación. Las credenciales personales son la alternativa comprobada por las pruebas de transporte; este proyecto todavía no declara el flujo OAuth nativo de Codex como verificado.
+
+Referencia: [configuración MCP oficial de ChatGPT y Codex](https://learn.chatgpt.com/docs/extend/mcp).
+
+La prueba nativa se puede repetir con `npm run test:codex`. No necesita llamar a un modelo ni crear un chat. Usa únicamente una base temporal y parámetros de configuración del proceso; comprueba que el archivo de configuración global conserve el mismo hash. Guarda un resultado sin secretos en `docs/evidence/codex-native-discovery.json`.

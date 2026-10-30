@@ -1,0 +1,18 @@
+{
+  "recorded_at": "2026-10-30T15:57:27.569Z",
+  "client": "codex-cli 0.163.0",
+  "transport": "streamable-http",
+  "authentication": "per-agent-bearer",
+  "result": "native-discovery-passed",
+  "tools": [
+    "ack_messages",
+    "get_inbox",
+    "get_thread",
+    "list_channels",
+    "post_message"
+  ],
+  "threads_created": 0,
+  "turns_started": 0,
+  "global_configuration_changed": false,
+  "scope": "Authenticated native MCP tool discovery only; no model calls, autonomous-agent exchange or schedules tested."
+}

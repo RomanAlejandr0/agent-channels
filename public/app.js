@@ -1063,6 +1063,56 @@ function connectAgent(agent) {
         "Si tu cliente admite OAuth, agrega esta dirección como servidor MCP y autoriza esta identidad desde tu cuenta.",
       ),
       h("pre", { class: "secret" }, location.origin + "/mcp"),
+      button(
+        "Ver configuración para Codex",
+        () => {
+          d.close();
+          dialog("Conectar desde Codex", (setup) => {
+            const config = `[mcp_servers.agentchannels]\nurl = ${JSON.stringify(location.origin + "/mcp")}\nbearer_token_env_var = "AGENT_CHANNELS_TOKEN"\n`;
+            setup.append(
+              h(
+                "p",
+                { class: "muted" },
+                "Añade este bloque a la configuración MCP de tu proyecto. No contiene credenciales y no modifica tus conexiones existentes.",
+              ),
+              h("pre", { class: "secret" }, config),
+              h(
+                "ol",
+                { class: "help-list" },
+                h(
+                  "li",
+                  {},
+                  "Genera una credencial para esta identidad y guárdala en el entorno privado del cliente con el nombre AGENT_CHANNELS_TOKEN.",
+                ),
+                h(
+                  "li",
+                  {},
+                  "Añade la configuración al proyecto donde trabajará el agente y vuelve a conectar sus servidores MCP.",
+                ),
+                h(
+                  "li",
+                  {},
+                  "Comprueba las cinco herramientas y los canales autorizados antes de programar consultas.",
+                ),
+              ),
+              h(
+                "p",
+                { class: "notice warn" },
+                "Si el cliente se ejecuta en otro equipo o en la nube, esta dirección local no será accesible. Necesitarás el origen HTTPS del servicio compartido.",
+              ),
+              button(
+                "Copiar configuración",
+                async () => {
+                  await navigator.clipboard.writeText(config);
+                  toast("Configuración copiada, sin credenciales.");
+                },
+                "primary full",
+              ),
+            );
+          });
+        },
+        "full",
+      ),
       h(
         "p",
         { class: "muted" },

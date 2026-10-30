@@ -22,6 +22,7 @@ La base real se entrega sin cuentas: el usuario crea su administrador al abrir e
 - Panel en español: cuentas, canales, mensajes, participantes, agentes, permisos, pausa y actividad. Revisado a 1440 px y 390 px.
 - Contenido cifrado AES-256-GCM, contraseñas scrypt, credenciales/sesiones como hashes; validación de origen, Host y CSRF; cookies HttpOnly; límites de uso y CSP.
 - PostgreSQL embebido persistente para desarrollo, adaptador PostgreSQL nativo y pruebas de ambos. Clave local privada; carga de clave desde entorno para alojamiento.
+- Ayuda de conexión para Codex desde el panel y ejemplo TOML sin credenciales. Descubrimiento autenticado de las cinco herramientas comprobado con el cliente nativo Codex CLI 0.163.0; no demuestra llamadas del modelo.
 - Inicio local por npm o archivo «Abrir AgentChannels.command». Documentación de operación, seguridad, conexión y compatibilidad.
 
 ## Evidencia reproducible
@@ -34,27 +35,29 @@ La base real se entrega sin cuentas: el usuario crea su administrador al abrir e
 | `npm run pilot`         | Dos conexiones SDK independientes que publican, se desconectan, responden más tarde y pierden acceso tras revocación. Es una prueba de protocolo, no de agentes autónomos.                                                        |
 | `npm audit --omit=dev`  | Sin vulnerabilidades reportadas para dependencias de ejecución en la revisión realizada. No equivale a una auditoría de seguridad del producto.                                                                                   |
 
+Prueba adicional: `npm run test:codex` pasó con **codex-cli 0.163.0**, transporte HTTP y Bearer por agente. El cliente nativo autenticó y devolvió las cinco herramientas, usando una base temporal y conexiones ajenas desactivadas solo mediante parámetros del proceso. Se comparó el hash de la configuración global antes y después: sin cambios. No se crearon conversaciones ni turnos y no se llamó a un modelo. Evidencia sin credenciales: `docs/evidence/codex-native-discovery.json`. Esta prueba es opcional y requiere tener Codex CLI instalado.
+
 Las pruebas cubren aislamiento de canales/personas, lectura frente a escritura, identidad no declarable por el cliente, permisos vigentes tras conexión, cifrado del cuerpo, reintentos concurrentes, confirmación atómica, límites por agente incluso con otra credencial, paginación de historial mayor a 100 mensajes, código OAuth de un solo uso, PKCE incorrecto, recurso incorrecto, renovación, revocación y persistencia tras reiniciar.
 
 Capturas de prueba, con datos ficticios: `test-results/panel-desktop.png` y `test-results/panel-mobile.png`. El comando de interfaz regenera esa carpeta.
 
 ## Auditoría del alcance acordado
 
-| Requisito                                                 | Estado                                                                                                                                              |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Proyecto en Code Projects del escritorio                  | Cumplido por los archivos del proyecto.                                                                                                             |
-| Continuación diaria del trabajo                           | Automatización heartbeat `continuar-prototipo-de-canales-mcp`, activa a las 09:00 del contexto local America/Mexico_City, ligada al chat de origen. |
-| Personas, invitaciones y panel de control                 | Implementado y probado por navegador/API.                                                                                                           |
-| Canales privados, permisos y mensajes persistentes        | Implementado y probado en ambas bases.                                                                                                              |
-| Cinco herramientas y conexiones MCP                       | Implementado y probado por HTTP, OAuth y puente stdio.                                                                                              |
-| Reinicio, reintentos y revocación sobre clientes abiertos | Probado en integración.                                                                                                                             |
-| Prueba con dos aplicaciones de IA concretas               | **Pendiente; no se ha afirmado compatibilidad con ChatGPT, Codex u otra aplicación.**                                                               |
-| Ejecución programada de los agentes participantes         | **Pendiente; la automatización que desarrolla este proyecto no demuestra ese requisito.**                                                           |
-| Uso desde equipos de amigos                               | **Pendiente si los clientes están fuera de esta Mac; requiere alojamiento HTTPS accesible.**                                                        |
+| Requisito                                                 | Estado                                                                                                                                                                                 |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Proyecto en Code Projects del escritorio                  | Cumplido por los archivos del proyecto.                                                                                                                                                |
+| Continuación diaria del trabajo                           | Automatización heartbeat `continuar-prototipo-de-canales-mcp`, activa a las 09:00 del contexto local America/Mexico_City, ligada al chat de origen.                                    |
+| Personas, invitaciones y panel de control                 | Implementado y probado por navegador/API.                                                                                                                                              |
+| Canales privados, permisos y mensajes persistentes        | Implementado y probado en ambas bases.                                                                                                                                                 |
+| Cinco herramientas y conexiones MCP                       | Implementado y probado por HTTP, OAuth y puente stdio.                                                                                                                                 |
+| Reinicio, reintentos y revocación sobre clientes abiertos | Probado en integración.                                                                                                                                                                |
+| Prueba con dos aplicaciones de IA concretas               | **Parcial: descubrimiento MCP nativo de Codex CLI verificado. Falta el intercambio entre dos agentes de aplicaciones reales; no se ha afirmado compatibilidad autónoma o programada.** |
+| Ejecución programada de los agentes participantes         | **Pendiente; la automatización que desarrolla este proyecto no demuestra ese requisito.**                                                                                              |
+| Uso desde equipos de amigos                               | **Pendiente si los clientes están fuera de esta Mac; requiere alojamiento HTTPS accesible.**                                                                                           |
 
 ## Siguiente trabajo autorizado
 
-1. Obtener la selección de dos aplicaciones y dónde se ejecutan. Se preguntó al usuario en el chat. Mientras tanto, no cambiar configuraciones globales ni iniciar agentes secundarios por su cuenta.
+1. Obtener la selección de dos aplicaciones y dónde se ejecutan. Codex CLI está instalado y su descubrimiento MCP ya se verificó; falta elegir y conectar a los participantes del piloto real. Se preguntó al usuario en el chat. Mientras tanto, no cambiar configuraciones globales ni iniciar agentes secundarios por su cuenta.
 2. Conectar esos clientes con sus identidades y permisos reales. Seguir docs/CLIENTS.md y registrar versión, entorno y método de conexión; nunca registrar tokens.
 3. Si se necesitan equipos externos, preparar un despliegue HTTPS persistente en un alojamiento que el usuario pueda administrar. Verificar administrador ya creado, cifrado y backup. No publicar datos ni cuentas locales.
 4. Demostrar consulta/respuesta en ejecuciones programadas reales y verificar la revocación. Registrar identificadores de mensajes y tiempos sin contenido privado.

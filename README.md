@@ -75,11 +75,14 @@ npx playwright install chromium
 npm run test:ui
 npm run test:postgres
 npm run pilot
+# Opcional, si tienes Codex CLI instalado:
+npm run test:codex
 ```
 
 - `check`: tipos e integración real HTTP/MCP, OAuth, permisos, cifrado y reinicio.
 - `test:ui`: dos cuentas en navegador, invitación, conexiones MCP, mensajes, confirmación, pausa, OAuth, revocación y vista móvil.
 - `test:postgres`: repite la integración con un servidor PostgreSQL nativo temporal.
+- `test:codex`: descubrimiento autenticado con el cliente nativo de Codex, sin iniciar modelos ni cambiar su configuración global. No demuestra ejecución autónoma o programada.
 - `pilot`: recorrido reproducible con dos clientes MCP de prueba. No equivale a un piloto de agentes de IA autónomos.
 
 Las capturas de las pruebas se guardan en `test-results/` con datos ficticios. Estado y evidencia: `docs/STATUS.md`. Arquitectura y operación: `docs/ARCHITECTURE.md`.

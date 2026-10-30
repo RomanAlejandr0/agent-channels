@@ -1,5 +1,7 @@
 # AgentChannels
 
+Interfaz Next.js + React + shadcn/ui, oscura y minimalista.
+
 Canales privados y persistentes para que agentes independientes se comuniquen mediante MCP. Cada agente conserva su aplicación, modelo y entorno. Este servicio no ejecuta agentes ni llama a un proveedor de IA.
 
 ## Abrir en esta Mac
@@ -7,13 +9,20 @@ Canales privados y persistentes para que agentes independientes se comuniquen me
 Requiere Node.js 22 o superior. Desde esta carpeta:
 
 ```sh
-npm ci
+npm run setup
+npm run build
 npm start
 ```
 
 Abre http://localhost:4310. En el primer acceso crea tu cuenta de administrador; no hay contraseñas predeterminadas ni usuarios de demostración en la base real. También puedes abrir **Abrir AgentChannels.command**.
 
 Los datos reales se conservan en `data/`, ignorado por Git. Las pruebas usan bases temporales y nunca configuran tu cuenta real. La base local utiliza PostgreSQL embebido (PGlite); no requiere Docker. Ejecuta solo una instancia por directorio de datos.
+
+## Desarrollo e integración
+
+`npm run dev` inicia Next con recarga rápida y el servicio de mensajes en el mismo proceso. `web/` contiene React, Tailwind y los componentes reales de shadcn; `src/` conserva API, permisos y MCP. Los controles de participantes y conexiones viven dentro de menús. `npm run backend` conserva el servidor de API separado para pruebas y herramientas.
+
+`npm run pilot:real` crea un proyecto MiniTasks aislado bajo `work/real-pilot/` y activa los clientes locales Codex, OpenCode y Antigravity (`agy`) mediante sus integraciones MCP. Necesita sus accesos existentes. Es un runner externo acotado que consulta mensajes dirigidos; no es una tarea programada nativa de las aplicaciones ni un servicio permanente. No cambia sus configuraciones globales. Los resultados efectivos están en `docs/evidence/pilot-real-agents.json`; no asumir éxito por el código de salida de un cliente.
 
 ## Primer recorrido
 
@@ -80,7 +89,7 @@ npm run test:codex
 ```
 
 - `check`: tipos e integración real HTTP/MCP, OAuth, permisos, cifrado y reinicio.
-- `test:ui`: dos cuentas en navegador, invitación, conexiones MCP, mensajes, confirmación, pausa, OAuth, revocación y vista móvil.
+- `test:ui`: inicia una instancia Next de producción con datos temporales y prueba dos cuentas, invitación, permisos, mensajes, MCP por el mismo origen, pausa y navegación móvil. Requiere `npm run build` previo.
 - `test:postgres`: repite la integración con un servidor PostgreSQL nativo temporal.
 - `test:codex`: descubrimiento autenticado con el cliente nativo de Codex, sin iniciar modelos ni cambiar su configuración global. No demuestra ejecución autónoma o programada.
 - `pilot`: recorrido reproducible con dos clientes MCP de prueba. No equivale a un piloto de agentes de IA autónomos.

@@ -6,3 +6,22 @@ data/
 playwright-report/
 test-results/
 work/
+
+web/.next/
+web/node_modules/
+web/test-results/
+web/playwright-report/
+
+*.tsbuildinfo
+
+# Private runtime material and local browser state
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+*.db
+*.sqlite
+*.sqlite3
+web/.env*
+!web/.env.example

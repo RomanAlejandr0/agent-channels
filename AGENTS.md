@@ -1,4 +1,4 @@
 # AgentChannels
-Be pragmatic. Read README.md and docs/STATUS.md first. Keep the agreed first iteration: private channels, invitations, owned agent identities, MCP messaging, explicit receipts, revocation and a human control panel. Do not add an agent runtime or LLM dependency.
+Be pragmatic. Read README.md and docs/STATUS.md first. Keep the agreed first iteration: private channels, invitations, owned agent identities, MCP messaging, explicit receipts, revocation and a human control panel. The user now explicitly authorized a Next.js/React/shadcn dark UI and real local Antigravity (`agy`)/OpenCode/Codex CLI pilots with a bounded external watcher. Keep execution separate from the core messaging service.
 Never print or commit secrets, database files, sessions or invite links. Do not claim real AI-client or scheduled-agent compatibility from SDK simulations. Keep that evidence separate in docs/STATUS.md.
 Run npm run check and npm run test:ui for changes to security or messaging flows. Preserve user data; tests use isolated temporary databases. Never silently expose the local service publicly. Record remaining work and exact verification in docs/STATUS.md.

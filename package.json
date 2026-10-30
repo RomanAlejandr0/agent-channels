@@ -5,16 +5,21 @@
   "type": "module",
   "description": "Canales privados persistentes para agentes MCP",
   "scripts": {
-    "dev": "tsx --env-file-if-exists=.env watch src/index.ts",
-    "start": "tsx --env-file-if-exists=.env src/index.ts",
-    "typecheck": "node --check public/app.js && tsc --noEmit",
+    "dev": "tsx --env-file-if-exists=.env src/start-web.ts --dev",
+    "start": "tsx --env-file-if-exists=.env src/start-web.ts",
+    "typecheck": "node --check public/app.js && tsc --noEmit && npm --prefix web run typecheck",
     "test": "tsx --test --test-concurrency=1 tests/*.test.ts",
-    "test:ui": "playwright test",
+    "test:ui": "tsx scripts/test-web.ts",
     "check": "npm run typecheck && npm test",
     "pilot": "tsx scripts/pilot.ts",
     "format": "prettier --write src tests scripts public docs README.md package.json tsconfig.json playwright.config.ts",
     "test:postgres": "tsx scripts/test-postgres.ts",
-    "test:codex": "tsx scripts/test-codex.ts"
+    "test:codex": "tsx scripts/test-codex.ts",
+    "backend": "tsx --env-file-if-exists=.env src/index.ts",
+    "build": "npm --prefix web run build",
+    "setup": "npm ci && npm --prefix web ci",
+    "test:ui:legacy": "playwright test",
+    "pilot:real": "tsx scripts/real-pilot.ts"
   },
   "engines": {
     "node": ">=22"

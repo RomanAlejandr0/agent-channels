@@ -12,7 +12,7 @@ La base real se entrega sin cuentas: el usuario crea su administrador al abrir e
 
 ## Corrección de dirección visual
 
-El usuario pidió sustituir la apariencia de dashboard verde por mensajería minimalista en modo oscuro, sin texto redundante. Se generaron conceptos de escritorio y móvil para revisión; el rediseño aún no está implementado. Consultar `docs/DESIGN_DIRECTION.md` antes de cambiar la interfaz.
+El usuario pidió sustituir la apariencia de dashboard verde por mensajería minimalista en modo oscuro, sin texto redundante. El rediseño ya está implementado con Next.js, React y shadcn/ui y verificado por navegador. Consultar `docs/DESIGN_DIRECTION.md` antes de cambiar la interfaz.
 
 ## Implementado
 
@@ -33,7 +33,7 @@ El usuario pidió sustituir la apariencia de dashboard verde por mensajería min
 
 | Comprobación            | Evidencia y alcance                                                                                                                                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run check`         | Sintaxis del panel, TypeScript y 11 pruebas de integración con PostgreSQL embebido.                                                                                                                                               |
+| `npm run check`         | Sintaxis del panel, TypeScript y 12 pruebas de integración con PostgreSQL embebido.                                                                                                                                               |
 | `npm run test:postgres` | Las mismas 11 pruebas con un servidor PostgreSQL nativo temporal, por el adaptador pg. No usa ni modifica bases reales.                                                                                                           |
 | `npm run test:ui`       | Un recorrido completo con dos cuentas en Chromium: alta, canal, invitación, agentes, permisos, conexiones SDK, envío, recepción, respuesta, pausa, consentimiento OAuth y revocación; escritorio y móvil; sin errores JavaScript. |
 | `npm run pilot`         | Dos conexiones SDK independientes que publican, se desconectan, responden más tarde y pierden acceso tras revocación. Es una prueba de protocolo, no de agentes autónomos.                                                        |
@@ -59,19 +59,25 @@ Capturas de prueba, con datos ficticios: `test-results/panel-desktop.png` y `tes
 | Ejecución programada de los agentes participantes         | **Pendiente; la automatización que desarrolla este proyecto no demuestra ese requisito.**                                                                                              |
 | Uso desde equipos de amigos                               | **Pendiente si los clientes están fuera de esta Mac; requiere alojamiento HTTPS accesible.**                                                                                           |
 
-## Bloqueo para cerrar el piloto real
+## Identidad del cliente
 
-La selección y conexión de los dos participantes sigue sin respuesta tras tres turnos del objetivo. La revisión actual confirma que el servicio local responde correctamente y que la base real todavía requiere crear la cuenta inicial (`needs_setup=true`). El repositorio está limpio y la prueba de descubrimiento nativo de Codex sigue registrada; no hay evidencia nueva de dos agentes reales ni de sus ejecuciones programadas.
+El usuario aclaró que el agente es Antigravity y se ejecuta con `agy`. Los primeros informes conservaron la etiqueta histórica «Gemini»; esos mensajes originales no se reescriben. Las nuevas ejecuciones usan «Antigravity». El modelo subyacente puede pertenecer a la familia Gemini; eso no cambia el nombre del cliente.
 
-Para continuar el piloto se necesita identificar las dos aplicaciones y si se ejecutarán en esta Mac o en equipos distintos. La persona propietaria debe crear su cuenta desde el panel, sin compartir su contraseña en el chat. Si hay equipos externos, se deberá resolver además un alojamiento HTTPS administrado por el usuario. La continuación diaria permanece activa; este bloqueo no equivale a entrega completa.
+## Piloto real y nueva interfaz
 
-## Siguiente trabajo autorizado
+El usuario resolvió la selección: Antigravity (`agy`), OpenCode y Codex, todos en esta Mac. Autorizó una interfaz Next.js + React + shadcn/ui y un runner externo para activar los agentes ante mensajes. El bloqueo anterior por selección de aplicaciones ya no aplica.
 
-1. Obtener la selección de dos aplicaciones y dónde se ejecutan. Codex CLI está instalado y su descubrimiento MCP ya se verificó; falta elegir y conectar a los participantes del piloto real. Se preguntó al usuario en el chat. Mientras tanto, no cambiar configuraciones globales ni iniciar agentes secundarios por su cuenta.
-2. Conectar esos clientes con sus identidades y permisos reales. Seguir docs/CLIENTS.md y registrar versión, entorno y método de conexión; nunca registrar tokens.
-3. Si se necesitan equipos externos, preparar un despliegue HTTPS persistente en un alojamiento que el usuario pueda administrar. Verificar administrador ya creado, cifrado y backup. No publicar datos ni cuentas locales.
-4. Demostrar consulta/respuesta en ejecuciones programadas reales y verificar la revocación. Registrar identificadores de mensajes y tiempos sin contenido privado.
-5. Solo cuando todos esos requisitos estén probados, cerrar la primera entrega y desactivar la continuación diaria para evitar trabajo adicional.
+La interfaz oscura está implementada en web/, compiló y pasó la prueba de navegador con dos cuentas, invitaciones, permisos, mensajes, MCP por el mismo origen, pausa y móvil. El servicio principal con Next corre en http://localhost:4310. El canal aislado del piloto está abierto en http://localhost:14316, con cuentas y archivos de prueba separados de los datos reales.
+
+Evidencia de agentes reales:
+
+- Codex publicó mediante MCP, creó normalize-task.mjs y confirmó recepción. Además, en una prueba visible en el navegador, un watcher detectó el mensaje dirigido del usuario de demostración y activó Codex, que respondió en el canal con identificador b0323964-0a12-4616-b9c2-2ccd6179f38a. Informó correctamente que faltaba summarize-tasks.mjs y que npm test fallaba. Esto prueba una reacción real activada externamente, no un scheduler nativo de Codex.
+- Antigravity, mediante `agy` y ACP, escribió tests/tasks.test.mjs y publicó mediante MCP en una ejecución independiente. Evidencia en docs/evidence/pilot-real-initial.json. No es Gemini CLI, que no está instalado.
+- OpenCode fue intentado con modelos gratuitos disponibles. La última ejecución quedó interrumpida por un error de transporte del proveedor; no publicó una respuesta en el canal. No se declara colaboración completa de los tres.
+
+El proyecto MiniTasks conjunto sigue incompleto y sus pruebas no pasan por la ausencia del módulo asignado a OpenCode. Hay que resolver esa conexión y repetir la colaboración. No sustituir el resultado por mensajes simulados ni presentar los clientes SDK como modelos autónomos.
+
+Continuación autorizada: reparar interoperabilidad de OpenCode, conservar el piloto visible, verificar colaboración y límites del watcher, consolidar documentación de arranque Next y evidencias. La continuación diaria sigue activa. Solo cerrar la entrega cuando el flujo completo esté verificado.
 
 ## Límites explícitos
 

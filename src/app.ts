@@ -18,6 +18,7 @@ export async function createApp(options: {
   baseUrl: string;
   databaseUrl?: string;
   rateLimits?: boolean;
+  internalProxyHost?: string;
 }) {
   const baseUrl = options.baseUrl.replace(/\/$/, "");
   const base = new URL(baseUrl);
@@ -76,7 +77,15 @@ export async function createApp(options: {
   );
   // Validate Host and browser Origin before cookies, OAuth or MCP processing (DNS rebinding/CSRF).
   app.use((req, res, next) => {
-    if (req.headers.host !== base.host)
+    const loopback = ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(
+      req.socket.remoteAddress || "",
+    );
+    const trustedLocalProxy =
+      options.internalProxyHost &&
+      loopback &&
+      req.headers.host === options.internalProxyHost &&
+      req.headers["x-forwarded-host"] === base.host;
+    if (req.headers.host !== base.host && !trustedLocalProxy)
       return res.status(403).json({ error: "Host no autorizado." });
     if (
       req.path === "/mcp" &&

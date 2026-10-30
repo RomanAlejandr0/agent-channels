@@ -4,7 +4,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID, createHash } from "node:crypto";
-import { request as httpRequest, type Server } from "node:http";
+import { request as httpRequest, createServer, type Server } from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { fileURLToPath } from "node:url";
@@ -753,5 +753,56 @@ test("local stdio adapter forwards permissions to the HTTP server", async () => 
     await fail(client, "get_thread", { message_id: randomUUID() });
   } finally {
     await client.close();
+  }
+});
+
+test("Next local proxy requires loopback, exact internal Host and canonical forwarded Host", async () => {
+  const internal = createServer();
+  await new Promise<void>((resolve) =>
+    internal.listen(0, "127.0.0.1", resolve),
+  );
+  const internalPort = (internal.address() as { port: number }).port;
+  const proxied = await createApp({
+    dataDir: "memory://",
+    baseUrl: "http://localhost:14317",
+    internalProxyHost: `127.0.0.1:${internalPort}`,
+    rateLimits: false,
+  });
+  internal.on("request", proxied.app);
+  const raw = (
+    headers: Record<string, string>,
+    method = "GET",
+    path = "/api/status",
+  ) =>
+    new Promise<number>((resolve) => {
+      const req = httpRequest(
+        `http://127.0.0.1:${internalPort}` + path,
+        { method, headers },
+        (res) => {
+          res.resume();
+          resolve(res.statusCode!);
+        },
+      );
+      req.end();
+    });
+  try {
+    assert.equal(await raw({ "x-forwarded-host": "localhost:14317" }), 200);
+    assert.equal(await raw({}), 403);
+    assert.equal(await raw({ "x-forwarded-host": "attacker.test" }), 403);
+    assert.equal(
+      await raw(
+        {
+          "x-forwarded-host": "localhost:14317",
+          Origin: "https://attacker.test",
+        },
+        "POST",
+        "/api/setup",
+      ),
+      403,
+    );
+  } finally {
+    internal.closeAllConnections();
+    await new Promise<void>((resolve) => internal.close(() => resolve()));
+    await proxied.db.close();
   }
 });
